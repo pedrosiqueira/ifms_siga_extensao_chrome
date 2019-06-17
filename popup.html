@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/popup.css" />
+    </head>
+    <body>
+        <div>
+            <button id="btnAddPresenca" type="button" class="btn btn-primary" title="Adicionar presença para os que ainda não têm">Adicionar Presença</button>
+            <button id="btnFalta" type="button" class="btn btn-primary">Dar Falta</button>
+            <button id="btnPresenca" type="button" class="btn btn-primary">Dar Presença</button>
+            <button id="btnConteudo" type="button" class="btn btn-primary">Preencher Conteúdo</button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalFaltas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div>Estudante: <select id="selectNomes"></select></div>
+                        <div>Data: <input id="inputData" type="date"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button id="btnModalFaltas" type="button" class="btn btn-primary" data-dismiss="modal">Salvar mudanças</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalConteudo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div>Cole aqui o conteúdo (cada linha é uma aula)</div>
+                        <div><textarea id="textareaConteudo"></textarea></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button id="btnModalConteudo" type="button" class="btn btn-primary" data-dismiss="modal">Salvar mudanças</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/popup.js"></script>
+    </body>
+</html>
