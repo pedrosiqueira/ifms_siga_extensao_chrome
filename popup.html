@@ -2,51 +2,124 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link href="css/vendor/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="css/popup.css" />
     </head>
     <body>
         <div>
-            <button id="btnAddPresenca" type="button" class="btn btn-primary" title="Adicionar presença para os que ainda não têm">Adicionar Presença</button>
-            <button id="btnFalta" type="button" class="btn btn-primary">Dar Falta</button>
-            <button id="btnPresenca" type="button" class="btn btn-primary">Dar Presença</button>
-            <button id="btnConteudo" type="button" class="btn btn-primary">Preencher Conteúdo</button>
+            <div id="academico-frequencia">
+                <button id="btnAddPresenca" type="button" class="btn btn-primary" title="Adicionar presença para os que ainda não têm">Adicionar Presença</button>
+            </div>
+            <div id="academico-conteudo">
+                <button id="btnConteudo" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConteudo">Preencher Conteúdo</button>
+                <button id="btnReposicao" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalReposicao">Preencher Reposição</button>
+            </div>
+            <div id="suap">
+                <button id="btnAbrirFolhasPonto" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAbrirFolhasPonto">Abrir Folha(s)-Ponto</button>
+            </div>
+            <div id="suap-folha-ponto">
+                <button id="btnImprimirFolhaPonto" type="button" class="btn btn-primary">Imprimir Folha-Ponto</button>
+            </div>
         </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="modalFaltas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+
+        <!---------------------- Modals ---------------------->
+
+        <div class="modal fade" id="modalAbrirFolhasPonto" tabindex="-1" aria-labelledby="modalAbrirFolhasPonto" aria-hidden="true">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div>Estudante: <select id="selectNomes"></select></div>
-                        <div>Data: <input id="inputData" type="date"></div>
+                        <div>IDs <input type="text" id="professores" placeholder="Digite os IDs separados por espaço"/></div>
+                        <div>Data início: <input id="dataInicio" type="date"></div>
+                        <div>Data fim: <input id="dataFim" type="date"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                        <button id="btnModalFaltas" type="button" class="btn btn-primary" data-dismiss="modal">Salvar mudanças</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button id="btnModalAbrirFolhasPonto" type="button" class="btn btn-primary" data-bs-dismiss="modal">Abrir</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="modalConteudo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="modalConteudo" tabindex="-1" aria-labelledby="modalConteudo" aria-hidden="true">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div>Cole aqui o conteúdo (cada linha é uma aula)</div>
                         <div><textarea id="textareaConteudo"></textarea></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                        <button id="btnModalConteudo" type="button" class="btn btn-primary" data-dismiss="modal">Salvar mudanças</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button id="btnModalConteudo" type="button" class="btn btn-primary" data-bs-dismiss="modal">Salvar mudanças</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script src="js/jquery-3.3.1.min.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+        <div class="modal fade" id="modalReposicao" tabindex="-1" aria-labelledby="modalReposicao" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div>Preencha aqui:<br><textarea id="textareaReposicao" style="resize:both;"></textarea></div>
+                        <div>Cada linha é uma aula de reposição, cada coluna separada por uma tabulação (\t) é um dado da aula de reposição, no seguinte formato:</div>
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>Data da aula a repor</td>
+                                            <td>Horário</td>
+                                            <td>Conteúdo ministrado</td>
+                                            <td>Observações</td>
+                                            <td>Data da reposição</td>
+                                            <td>Horário início</td>
+                                            <td>Horário Término</td>
+                                            <td>Justificativa</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div>Um exemplo seria:</div>
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>29/07/2020</td>
+                                            <td>07:00 às 07:45</td>
+                                            <td>Funções de primeiro grau</td>
+                                            <td>Aula remota</td>
+                                            <td>20/11/2020</td>
+                                            <td>14:30</td>
+                                            <td>15:15</td>
+                                            <td>Suspensão devido ao covid-19</td>
+                                        </tr>
+                                        <tr>
+                                            <td>30/07/2020</td>
+                                            <td>10:15 às 11:00</td>
+                                            <td>Funções de segundo grau</td>
+                                            <td>Aula remota</td>
+                                            <td>21/11/2020</td>
+                                            <td>14:30</td>
+                                            <td>15:15</td>
+                                            <td>Suspensão devido ao covid-19</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button id="btnModalReposicao" type="button" class="btn btn-primary" data-bs-dismiss="modal">Salvar mudanças</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="js/vendor/jquery-3.6.0.min.js"></script>
+        <script src="js/vendor/bootstrap.bundle.min.js"></script>
         <script src="js/popup.js"></script>
     </body>
 </html>

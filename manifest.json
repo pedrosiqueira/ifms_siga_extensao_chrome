@@ -1,24 +1,42 @@
 {
-    "name": "Script SIGA IFMS",
-    "version": "1.0",
-    "description": "Assistente para preencher os diários",
-    "permissions": ["declarativeContent", "activeTab"],
-    "page_action": {
-        "default_popup": "popup.html",
-        "default_icon": "favicon.png"
-    },
-    "background": {
-        "scripts": ["js/background.js"],
-        "persistent": false
-    },
-    "content_scripts": [
-        {
-            "matches": ["https://academico.ifms.edu.br/administrativo/professores/diario*"],
-            "js": ["js/jquery-3.3.1.min.js", "js/contentScript.js"]
-        }
-    ],
-    "icons": {
-        "128": "favicon.png"
-    },
-    "manifest_version": 2
+   "action": {
+      "default_icon": "img/favicon.png",
+      "default_popup": "popup.html"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [
+      {
+         "js": [
+            "js/suapScript.js"
+         ],
+         "matches": [
+            "https://suap.ifms.edu.br/*"
+         ]
+      },
+      {
+         "css": [
+            "css/academico.css"
+         ],
+         "js": [
+            "js/vendor/jquery-3.6.0.min.js",
+            "js/academicoScript.js"
+         ],
+         "matches": [
+            "https://academico.ifms.edu.br/*"
+         ]
+      }
+   ],
+   "description": "Assistente para preencher relatórios",
+   "icons": {
+      "128": "img/favicon.png"
+   },
+   "manifest_version": 3,
+   "name": "Scripts IFMS",
+   "permissions": [
+      "declarativeContent",
+      "storage"
+   ],
+   "version": "0.1"
 }
