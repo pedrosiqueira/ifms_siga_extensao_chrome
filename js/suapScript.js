@@ -9,7 +9,6 @@ function changeDisplay(display) {
         m.style.display = display;
 }
 
-
 function imprimir() {
     changeDisplay("none");
     for (let t of document.getElementsByTagName("table"))
@@ -18,9 +17,29 @@ function imprimir() {
     changeDisplay("block");
 }
 
+function abrirFolhasPonto(dados) {
+    for (let prof of dados.professores.split(" ")) {
+        let url = getFolhaPonto(prof, dados.dataInicio, dados.dataFim);
+        window.open(url.href, '_blank');
+    }
+}
+
+function getFolhaPonto(professor, dataInicio, dataFim) {
+    let myUrlWithParams = new URL("https://suap.ifms.edu.br/ponto/frequencia_funcionario/");
+
+    dataInicio = dataInicio.substring(8, 10) + "/" + dataInicio.substring(5, 7) + "/" + dataInicio.substring(0, 4);
+    dataFim = dataFim.substring(8, 10) + "/" + dataFim.substring(5, 7) + "/" + dataFim.substring(0, 4);
+
+    myUrlWithParams.searchParams.append("funcionario", professor);
+    myUrlWithParams.searchParams.append("faixa_0", dataInicio);
+    myUrlWithParams.searchParams.append("faixa_1", dataFim);
+
+    return myUrlWithParams;
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.func) {
-        this[request.func]();
+        this[request.func](request.dados);
     }
-    sendResponse({url: window.location.href});
+    sendResponse({ url: window.location.href });
 });

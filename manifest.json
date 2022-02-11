@@ -9,6 +9,7 @@
    "content_scripts": [
       {
          "js": [
+            "js/vendor/jquery-3.6.0.min.js",
             "js/suapScript.js"
          ],
          "matches": [
@@ -28,15 +29,16 @@
          ]
       }
    ],
-   "description": "Assistente para preencher relatórios",
+   "description": "Assistente para preencher diários no acadêmico e imprimir folhas-ponto no suap.",
    "icons": {
       "128": "img/favicon.png"
    },
    "manifest_version": 3,
    "name": "Scripts IFMS",
    "permissions": [
+      "activeTab",
       "declarativeContent",
       "storage"
    ],
-   "version": "0.1"
+   "version": "0.2"
 }

@@ -85,7 +85,7 @@ function preencherAula(id, conteudo) {
     var href = "/administrativo/professores/salvarConteudo/" + id;
     var td = $("td#conteudo_" + id);
 
-    $.post(href, {conteudo: conteudo}
+    $.post(href, { conteudo: conteudo }
     ).done(function () {
         contador--;
         if (contador <= 0)
@@ -112,15 +112,15 @@ function preencherReposicao(reposicoes) {
 
 function preencherReposicao2(id, fields) {
     $.post(window.location.href,
-            {
-                'data[antecipacao_reposicao][aula_id]': id,
-                'data[antecipacao_reposicao][data]': fields[4],
-                'data[antecipacao_reposicao][hora_inicio]': fields[5],
-                'data[antecipacao_reposicao][hora_fim]': fields[6],
-                'data[antecipacao_reposicao][conteudo]': fields[2],
-                'data[antecipacao_reposicao][observacao]': fields[3],
-                'data[antecipacao_reposicao][justificativa]': fields[7]
-            }
+        {
+            'data[antecipacao_reposicao][aula_id]': id,
+            'data[antecipacao_reposicao][data]': fields[4],
+            'data[antecipacao_reposicao][hora_inicio]': fields[5],
+            'data[antecipacao_reposicao][hora_fim]': fields[6],
+            'data[antecipacao_reposicao][conteudo]': fields[2],
+            'data[antecipacao_reposicao][observacao]': fields[3],
+            'data[antecipacao_reposicao][justificativa]': fields[7]
+        }
     ).done(function () {
         contador--;
         if (contador <= 0)
@@ -128,9 +128,33 @@ function preencherReposicao2(id, fields) {
     });
 }
 
+function preencherProposta(proposta) {
+    contador = 0;
+
+    createModalEspera("Aguarde o preenchimento da proposta");
+
+    for (let conteudo of proposta) {
+        fields = conteudo.split('\t');
+        contador++;
+        preencherProposta2(fields);
+    }
+}
+
+function preencherProposta2(fields) {
+    console.log(fields[4]);
+    console.log(fields[5]);
+    // <td>Data</td>
+    // <td>Nº de aulas</td>
+    // <td>Conteúdo a ser desenvolvido</td>
+    // <td>Técnicas de Ensino</td>
+    // <td>Recursos de Ensino</td>
+    // <td>Observações</td>
+
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.func) {
         this[request.func](request.dados);
     }
-    sendResponse({url: window.location.href});
+    sendResponse({ url: window.location.href });
 });

@@ -1,49 +1,25 @@
-let minhasTabs = {};
-//
-function getFolhaPonto(professor, dataInicio, dataFim) {
-    let myUrlWithParams = new URL("https://suap.ifms.edu.br/ponto/frequencia_funcionario/");
+// Wrap in an onInstalled callback in order to avoid unnecessary work
+// every time the background script is run
+chrome.runtime.onInstalled.addListener(() => {
+    // Page actions are disabled by default and enabled on select tabs
+    chrome.action.disable();
 
-    dataInicio = dataInicio.substring(8, 10) + "/" + dataInicio.substring(5, 7) + "/" + dataInicio.substring(0, 4);
-    dataFim = dataFim.substring(8, 10) + "/" + dataFim.substring(5, 7) + "/" + dataFim.substring(0, 4);
+    // Clear all rules to ensure only our expected rules are set
+    chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
+        // Declare a rule to enable the action on example.com pages
+        let exampleRule = {
+            conditions: [
+                new chrome.declarativeContent.PageStateMatcher({
+                    pageUrl: { pathPrefix: 'academico.ifms.edu.br/administrativo/professores/diario' },
+                }),
+                new chrome.declarativeContent.PageStateMatcher({
+                    pageUrl: { pathPrefix: 'suap.ifms.edu.br' },
+                }),
+            ],
+            actions: [new chrome.declarativeContent.ShowAction()],
+        };
 
-    myUrlWithParams.searchParams.append("funcionario", professor);
-    myUrlWithParams.searchParams.append("faixa_0", dataInicio);
-    myUrlWithParams.searchParams.append("faixa_1", dataFim);
-
-    return myUrlWithParams;
-}
-
-
-chrome.runtime.onInstalled.addListener(function (details) {
-    chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
-        chrome.declarativeContent.onPageChanged.addRules([
-            {
-                conditions: [
-                    new chrome.declarativeContent.PageStateMatcher({
-                        pageUrl: {
-                            urlMatches: "https://academico.ifms.edu.br/administrativo/professores/diario*"
-                        },
-                    })
-                ],
-                actions: [new chrome.declarativeContent.ShowPageAction()]
-            }
-            , {
-                conditions: [
-                    new chrome.declarativeContent.PageStateMatcher({
-                        pageUrl: {
-                            urlMatches: "https://suap.ifms.edu.br/*"
-                        },
-                    })
-                ],
-                actions: [new chrome.declarativeContent.ShowPageAction()]
-            }
-        ]);
+        // Finally, apply our new array of rules
+        chrome.declarativeContent.onPageChanged.addRules([exampleRule]);
     });
-});
-
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    for (let prof of request.professores.split(" ")) {
-        let url = getFolhaPonto(prof, request.dataInicio, request.dataFim);
-        chrome.tabs.create({'url': url.href});
-    }
 });
