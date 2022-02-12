@@ -27,7 +27,6 @@
         </div>
     </div>
 
-
     <!---------------------- Modals ---------------------->
 
     <div class="modal fade" id="modalAbrirFolhasPonto" tabindex="-1" aria-labelledby="modalAbrirFolhasPonto" aria-hidden="true">
@@ -134,8 +133,8 @@
                             <table>
                                 <tbody>
                                     <tr>
-                                        <td>Data</td>
-                                        <td>Nº de aulas</td>
+                                        <td>Data inicial</td>
+                                        <td>Data final</td>
                                         <td>Conteúdo a ser desenvolvido</td>
                                         <td>Técnicas de Ensino</td>
                                         <td>Recursos de Ensino</td>
@@ -145,26 +144,51 @@
                             </table>
                         </div>
                     </div>
-                    <div>Copie os dados do excel para virem separados por tabulação. Um exemplo seria:</div>
+                    <div>Copie os dados do excel para virem separados por tabulação. A extensão já calcula quantas aulas há entre as duas datas. Se não informar a data final, calcula-se quantas aulas há apenas na data inicial. O campo observações é opcional. Um exemplo seria:</div>
                     <div id="table-wrapper">
                         <div id="table-scroll">
                             <table>
                                 <tbody>
                                     <tr>
-                                        <td>08/02/2022</td>
-                                        <td>3</td>
-                                        <td>Operadores, condições, repetições</td>
-                                        <td>Aula prática, Expositiva/dialogada, Pesquisa</td>
-                                        <td>Laboratório, Livro didático, Material impresso (apostila, textos), Projetor multimídia, Quadro branco/canetão</td>
-                                        <td>Se não tiver nenhum observação pode deixar em branco</td>
+                                        <td>27/02/2022</td>
+                                        <td>05/03/2022</td>
+                                        <td>Um exemplo de conteúdo</td>
+                                        <td>Escreva quaisquer técnicas que quiser</td>
+                                        <td>Escreva quaisquer recursos que quiser</td>
+                                        <td>Uma observação</td>
                                     </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tbody>
                                     <tr>
-                                        <td>15/02/2022</td>
-                                        <td>3</td>
-                                        <td>Formulários, funções</td>
-                                        <td>Aula prática, Expositiva/dialogada, Pesquisa</td>
-                                        <td>Laboratório, Livro didático, Material impresso (apostila, textos), Projetor multimídia, Quadro branco/canetão</td>
-                                        <td>-</td>
+                                        <td>15/03/22 </td>
+                                        <td></td>
+                                        <td>A segunda data pode deixar em branco </td>
+                                        <td>Aula prática, Expositiva/dialogada </td>
+                                        <td>Laboratório, Projetor multimídia </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>22/03/2022 </td>
+                                        <td>Também não precisa de tabulação se omitir a segunda data </td>
+                                        <td>Aula prática, Expositiva/dialogada </td>
+                                        <td>Laboratório, Projetor multimídia </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>27/03/2022 </td>
+                                        <td>09/04 </td>
+                                        <td>Também é possível omitir apenas o ano das datas </td>
+                                        <td>Aula prática, Expositiva/dialogada </td>
+                                        <td>Laboratório, Projetor multimídia </td>
+                                        <td>Outra observação</td>
                                     </tr>
                                 </tbody>
                             </table>

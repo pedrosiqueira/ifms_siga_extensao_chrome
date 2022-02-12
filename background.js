@@ -2,7 +2,7 @@
 // every time the background script is run
 chrome.runtime.onInstalled.addListener(() => {
     // Page actions are disabled by default and enabled on select tabs
-    chrome.action.disable();
+    // chrome.action.disable();
 
     // Clear all rules to ensure only our expected rules are set
     chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
