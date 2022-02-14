@@ -1,10 +1,10 @@
 function changeDisplay(display) {
     document.getElementById("breadcrumbs").style.display = display;
-    if (document.getElementById("feedback_message"))
-        document.getElementById("feedback_message").style.display = display;
+    document.getElementById("feedback_message").style.display = display;
     document.getElementsByClassName("box filters collapsed")[0].style.display = display;
     document.getElementsByClassName("page-break")[0].style.display = display;
     document.getElementsByClassName("action-links hide-sm")[0].style.display = display;
+    document.getElementsByClassName("msg errornote error")[0].style.display = display;
     for (let m of document.getElementsByClassName("msg info"))
         m.style.display = display;
 }
