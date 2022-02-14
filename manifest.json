@@ -36,7 +36,6 @@
    "manifest_version": 3,
    "name": "Scripts IFMS",
    "permissions": [
-      "activeTab",
       "declarativeContent",
       "storage"
    ],
