@@ -1,7 +1,7 @@
 function changeDisplay(display) {
     if (document.getElementById("breadcrumbs")) document.getElementById("breadcrumbs").style.display = display;
     document.querySelectorAll("h3").forEach(el => { if (el.textContent.includes('Filtros')) { el.parentElement.style.display = display; } });
-    document.querySelectorAll("h3").forEach(el => { if (el.textContent.includes('Detalhamento das Horas')) { el.parentElement.style.display = display; } });
+    // document.querySelectorAll("h3").forEach(el => { if (el.textContent.includes('Detalhamento das Horas')) { el.parentElement.style.display = display; } });
     document.querySelectorAll(".page-break").forEach(el => el.style.display = display);
     document.querySelectorAll(".action-links.hide-sm").forEach(el => el.style.display = display);
     document.querySelectorAll(".msg").forEach(el => el.style.display = display);
