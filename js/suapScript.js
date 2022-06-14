@@ -1,12 +1,10 @@
 function changeDisplay(display) {
     if (document.getElementById("breadcrumbs")) document.getElementById("breadcrumbs").style.display = display;
-    if (document.getElementById("feedback_message")) document.getElementById("feedback_message").style.display = display;
-    if (document.getElementById("box filters collapsed")) document.getElementsByClassName("box filters collapsed")[0].style.display = display;
-    if (document.getElementById("page-break")) document.getElementsByClassName("page-break")[0].style.display = display;
-    if (document.getElementById("action-links hide-sm")) document.getElementsByClassName("action-links hide-sm")[0].style.display = display;
-    if (document.getElementById("msg errornote error")) document.getElementsByClassName("msg errornote error")[0].style.display = display;
-    for (let m of document.getElementsByClassName("msg info"))
-        m.style.display = display;
+    document.querySelectorAll("h3").forEach(el => { if (el.textContent.includes('Filtros')) { el.parentElement.style.display = display; } });
+    document.querySelectorAll("h3").forEach(el => { if (el.textContent.includes('Detalhamento das Horas')) { el.parentElement.style.display = display; } });
+    document.querySelectorAll(".page-break").forEach(el => el.style.display = display);
+    document.querySelectorAll(".action-links.hide-sm").forEach(el => el.style.display = display);
+    document.querySelectorAll(".msg").forEach(el => el.style.display = display);
 }
 
 function imprimir() {
