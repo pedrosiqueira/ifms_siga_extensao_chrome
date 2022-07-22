@@ -23,3 +23,22 @@ chrome.runtime.onInstalled.addListener(() => {
         chrome.declarativeContent.onPageChanged.addRules([exampleRule]);
     });
 });
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.funcao) this[request.funcao](sendResponse, request.dados);
+    return true;
+});
+
+function fetchHTML(sendResponse, dados) {
+    fetch(chrome.runtime.getURL("html/" + dados.html + ".html"))
+        .then(response => response.text())
+        .then(data => {
+            sendResponse(data);
+        });
+}
+
+// function getCurrentTabId(sendResponse) {
+//     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//         sendResponse(tabs[0].id);
+//     });
+// }
