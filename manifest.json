@@ -1,7 +1,6 @@
 {
    "action": {
-      "default_icon": "img/favicon.png",
-      "default_popup": "popup.html"
+      "default_icon": "img/favicon.png"
    },
    "background": {
       "service_worker": "background.js"
@@ -9,7 +8,6 @@
    "content_scripts": [
       {
          "js": [
-            "js/vendor/jquery-3.6.0.min.js",
             "js/suapScript.js"
          ],
          "matches": [
@@ -17,11 +15,7 @@
          ]
       },
       {
-         "css": [
-            "css/academico.css"
-         ],
          "js": [
-            "js/vendor/jquery-3.6.0.min.js",
             "js/academicoScript.js"
          ],
          "matches": [
@@ -39,5 +33,5 @@
       "declarativeContent",
       "storage"
    ],
-   "version": "0.3.1"
+   "version": "0.4.0"
 }
