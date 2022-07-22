@@ -53,53 +53,68 @@ function btnModalProposta() {
     });
 }
 
-async function startPopup() {
-
-    [currentTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    chrome.tabs.sendMessage(currentTab.id, {}, (response) => {
-        document.getElementById("suap").style.display = "none";
-        document.getElementById("suap-folha-ponto").style.display = "none";
-        document.getElementById("academico-frequencia").style.display = "none";
-        document.getElementById("academico-conteudo").style.display = "none";
-        document.getElementById("academico-proposta-trabalho").style.display = "none";
-
-        if (response == undefined) {
-        } else if (response.url.includes("academico.ifms.edu.br")) {
-            if (response.url.includes("frequencia")) {
-                document.getElementById("academico-frequencia").style.display = "block";
-                $("#btnAddPresenca").click(btnAddPresenca);
-            } else if (response.url.includes("conteudo")) {
-                document.getElementById("academico-conteudo").style.display = "block";
-                $("#btnModalConteudo").click(btnModalConteudo);
-                $("#btnModalReposicao").click(btnModalReposicao);
-            } else if (response.url.includes("plano_ensino/editar")) {
-                document.getElementById("academico-proposta-trabalho").style.display = "block";
-                $("#btnModalProposta").click(btnModalProposta);
-            }
-        } else if (response.url.includes("suap.ifms.edu.br")) {
-            document.getElementById("suap").style.display = "block";
-
-            chrome.storage.sync.get("professores", ({ professores }) => { // para obter o valor de uma variável armazenada no chrome
-                if (professores)
-                    $("#professores").val(professores);
-            });
-
-            let data = new Date();
-            let dataInicio = new Date(data.getFullYear(), data.getMonth() - 1, 1).toISOString().substring(0, 10);
-            let dataFim = new Date(data.getFullYear(), data.getMonth(), 0).toISOString().substring(0, 10);
-
-            $("#dataInicio").val(dataInicio);
-            $("#dataFim").val(dataFim);
-
-            $("#btnModalAbrirFolhasPonto").click(btnModalAbrirFolhasPonto);
-            $("#btnImprimirFolhaPonto").click(btnImprimirFolhaPonto);
-
-            if (response.url.includes("faixa_0")) {
-                document.getElementById("suap-folha-ponto").style.display = "block";
-            }
-        }
+function sendMessage(funcao, dados) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+            funcao: funcao,
+            dados: dados
+        });
     });
 }
 
-startPopup();
+function init() {
+    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //     if (request.funcao)
+    //         sendResponse("this[request.funcao](request.dados)");
+
+    //     return true;
+    // });
+
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {}, (response) => {
+            document.getElementById("suap").style.display = "none";
+            document.getElementById("suap-folha-ponto").style.display = "none";
+            document.getElementById("academico-frequencia").style.display = "none";
+            document.getElementById("academico-conteudo").style.display = "none";
+            document.getElementById("academico-proposta-trabalho").style.display = "none";
+
+            if (response == undefined) {
+            } else if (response.url.includes("academico.ifms.edu.br")) {
+                if (response.url.includes("frequencia")) {
+                    document.getElementById("academico-frequencia").style.display = "block";
+                    $("#btnAddPresenca").click(btnAddPresenca);
+                } else if (response.url.includes("conteudo")) {
+                    document.getElementById("academico-conteudo").style.display = "block";
+                    $("#btnModalConteudo").click(btnModalConteudo);
+                    $("#btnModalReposicao").click(btnModalReposicao);
+                } else if (response.url.includes("plano_ensino/editar")) {
+                    document.getElementById("academico-proposta-trabalho").style.display = "block";
+                    $("#btnModalProposta").click(btnModalProposta);
+                }
+            } else if (response.url.includes("suap.ifms.edu.br")) {
+                document.getElementById("suap").style.display = "block";
+
+                chrome.storage.sync.get("professores", ({ professores }) => { // para obter o valor de uma variável armazenada no chrome
+                    if (professores)
+                        $("#professores").val(professores);
+                });
+
+                let data = new Date();
+                let dataInicio = new Date(data.getFullYear(), data.getMonth() - 1, 1).toISOString().substring(0, 10);
+                let dataFim = new Date(data.getFullYear(), data.getMonth(), 0).toISOString().substring(0, 10);
+
+                $("#dataInicio").val(dataInicio);
+                $("#dataFim").val(dataFim);
+
+                $("#btnModalAbrirFolhasPonto").click(btnModalAbrirFolhasPonto);
+                $("#btnImprimirFolhaPonto").click(btnImprimirFolhaPonto);
+
+                if (response.url.includes("faixa_0")) {
+                    document.getElementById("suap-folha-ponto").style.display = "block";
+                }
+            }
+        });
+    });
+}
+
+window.addEventListener('load', (event) => { init(); });
