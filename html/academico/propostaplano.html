@@ -1,0 +1,37 @@
+<div>
+    <div id="modalProposta" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalPropostaLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="modalPropostaLabel">Gerar Proposta</h3>
+        </div>
+        <div class="modal-body">
+            <label for="tipoProposta">Selecione o tipo de proposta</label>
+            <select id="tipoProposta">
+                <option value="" disabled selected>Selecione uma...</option>
+                <option>Por aula</option>
+                <option>Por dia</option>
+                <option>Por semana</option>
+            </select>
+
+            <label for="proposta">Preencha a proposta
+                <br>(você pode colar dados de um editor de planilhas)
+                <br>(linhas em branco são desconsideradas)</label>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Dia</th>
+                        <th>Conteúdo a ser desenvolvido</th>
+                        <th>Técnicas de Ensino</th>
+                        <th>Recursos de Ensino</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody id="proposta" class="editabletable"></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+            <button id="salvar_proposta" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Salvar</button>
+        </div>
+    </div>
+</div>
