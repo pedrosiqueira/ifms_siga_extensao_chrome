@@ -2,188 +2,27 @@ let contador; // variável que conta quantas requisições ajax foram feitas
 let url;
 let planoId;
 
-function createAttribute(key, value) {
-    let att = document.createAttribute(key);
-    att.value = value;
-    return att;
+function htmlToElement(html) {
+    let template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
 }
 
-function createModalEspera(text, closeButton) {
-    let modal = document.createElement("div");
-    modal.setAttributeNode(createAttribute("id", "modalEspera"));
-    modal.setAttributeNode(createAttribute("class", "modal-temp"));
-    document.body.appendChild(modal);
-
-    let modalContent = document.createElement("div");
-    modalContent.setAttributeNode(createAttribute("class", "modal-content-temp"));
-    modal.appendChild(modalContent);
-
-    if (closeButton) {
-        let modalClose = document.createElement("span");
-        modalClose.setAttributeNode(createAttribute("class", "close-temp"));
-        modalClose.innerHTML = "&times;";
-        modalContent.appendChild(modalClose);
-
-        modalClose.onclick = function () {
-            modal.parentNode.removeChild(modal);
-        }
-
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.parentNode.removeChild(modal);
-            }
-        }
-    }
-
-    let modalBody = document.createElement("p");
-    modalBody.innerHTML = text;
-    modalContent.appendChild(modalBody);
-
-    var myModal = document.getElementById('modalEspera');
-    myModal.style.display = "block";
-}
-
-async function addPresenca() {
-    $as = $('a[href*="presencaTodos"]');
-    $as.removeAttr("onclick");
-    let myMap = new Map();
-    $as.each(function (i, e) {//varios links sao os mesmos, entao eu tiro os repetidos
-        myMap.set($(this).attr("href"), $(this).attr("href"));
-    });
-
-    createModalEspera("Aguarde a colocação das aulas");
-
-    for (var value of myMap.values()) {
-        await fetch(value);
-    }
-
-    window.location.reload(false);
-}
-
-function getAllIds() {
-    let $tds = $("td[id^=conteudo_");
-    let $ids = [];
-    $tds.each(function () {//varios links sao os mesmos, entao eu tiro os repetidos
-        $ids.push($(this).attr("id").substring(9));
-    });
-    return $ids;
-}
-
-function preencherConteudo(linhas) {
-    $ids = getAllIds();
-
-    contador = 0;
-
-    createModalEspera("Aguarde o preenchimento dos conteúdos");
-
-    for (let i = 0; i < $ids.length; i++) {
-        preencherAula($ids[i], linhas[i]);
-    }
-
-}
-
-function preencherAula(id, conteudo) {
-    var href = "/administrativo/professores/salvarConteudo/" + id;
-    var td = $("td#conteudo_" + id);
-
-    contador++;
-    $.post(href, { conteudo: conteudo }
-    ).done(function () { if (--contador <= 0) window.location.reload(false); });
-}
-
-function preencherReposicao(reposicoes) {
-    contador = 0;
-
-    createModalEspera("Aguarde o preenchimento das reposições");
-
-    for (let repo of reposicoes) {
-        fields = repo.split('\t');
-        var td = $('td:contains(' + fields[0] + ')'); // se este elemento contem a string em seu innerHTML
-        td = td.siblings(':contains(' + fields[1] + ')');
-        td = td.siblings('[id^="conteudo_"]'); // filtra os irmaos cujo atributo id comece com 'conteudo_'
-        if (td.length > 0) { // se achou
-            preencherReposicao2(td.attr("id").substring(9), fields);
-        }
-    }
-}
-
-function preencherReposicao2(id, fields) {
-    contador++;
-    $.post(window.location.href,
-        {
-            'data[antecipacao_reposicao][aula_id]': id,
-            'data[antecipacao_reposicao][data]': fields[4],
-            'data[antecipacao_reposicao][hora_inicio]': fields[5],
-            'data[antecipacao_reposicao][hora_fim]': fields[6],
-            'data[antecipacao_reposicao][conteudo]': fields[2],
-            'data[antecipacao_reposicao][observacao]': fields[3],
-            'data[antecipacao_reposicao][justificativa]': fields[7]
-        }
-    ).done(function () { if (--contador <= 0) window.location.reload(false); });
-}
-
-function preencherProposta(proposta) {
-    contador = 0;
-
-    createModalEspera("Aguarde o preenchimento da proposta");
-
-    let href = '' + location;
-    href = href.replace(/(\d+).*/, "$1/conteudo");
-
-    $.post(href).done(function (data) {
-        let $doc = $.parseHTML(data);
-        let datas = $("tbody:eq(1) tr td:nth-child(2)", $doc).map(function () {
-            return stringParaDate($(this).text());
-        });
-
-        url = '' + location;
-        planoId = url.match(/\d+/g)[1];
-        url = url.replace(/plano_ensino.*/, "plano_ensino/");
-
-        for (let conteudo of proposta) {
-            fields = conteudo.split('\t');
-            if (!fields[0]) continue;
-            preencherProposta2(fields, datas);
-        }
-    });
-}
-
-function preencherProposta2(fields, datas) {
+function indexOfFirstDigit(input) {
     let i = 0;
-    let dataIni = stringParaDate(fields[i++].trim());
-    let dataFim;
-    if (/^[\d\/]+$/.test(fields[i].trim())) { // fields[1] é uma data
-        dataFim = stringParaDate(fields[i++]);
-    } else {
-        dataFim = dataIni; // fields[1] não é uma data
-        if (!fields[i].trim()) i++; // fields[1] está vazio
-    }
-    let conteudo = fields[i++].trim();
-    let tecnicas = fields[i++].trim();
-    let recursos = fields[i++].trim();
-    let observacoes = fields[i] ? fields[i].trim() : "";
+    for (; input[i] < '0' || input[i] > '9'; i++);
+    return i >= input.length ? -1 : i;
+}
 
-    if (dataIni > dataFim) { let tmp = dataIni; dataIni = dataFim; dataFim = temp; }
-
-    // como o plano de ensino só aceita períodos no mesmo mes, se forem meses diferentes, precisamos criar dois períodos, um para cada mês. se for um período maior q 2 meses já não funciona.
-    if (dataIni.getMonth() != dataFim.getMonth()) {
-        let dataIni2 = new Date(dataFim.getFullYear(), dataFim.getMonth(), 1); // primeiro dia do mes
-        let dataFim2 = dataFim;
-        dataFim = new Date(dataIni.getFullYear(), dataIni.getMonth() + 1, 0); // ultimo dia do mes
-
-        let numAulas2 = 0;
-        for (let data of datas) if (data >= dataIni2 && data <= dataFim2) numAulas2++;
-
-        salvarConteudo(mesParaString(dataIni2.getMonth()), dataIni2.getDate(), dataFim2.getDate(), numAulas2, observacoes, conteudo, tecnicas, recursos);
-    }
-
-    let numAulas = 0;
-    for (let data of datas) if (data >= dataIni && data <= dataFim) numAulas++;
-
-    salvarConteudo(mesParaString(dataIni.getMonth()), dataIni.getDate(), dataFim.getDate(), numAulas, observacoes, conteudo, tecnicas, recursos);
+function indexOfLastDigit(input) {
+    let i = input.length - 1;
+    for (; input[i] < '0' || input[i] > '9'; i--);
+    return i < 0 ? -1 : i;
 }
 
 function stringParaDate(str) {
+    str = str.substring(indexOfFirstDigit(str), indexOfLastDigit(str) + 1); // faz o trim de qualquer coisa que nao seja número
     str = str.split("/");
     if (str.length < 3) str[2] = new Date().getFullYear(); // se não informou o ano (18/05)
     else if (str[2].length == 2) str[2] = "20" + str[2]; // se não informou o ano completo (18/05/22)
@@ -205,19 +44,86 @@ function mesParaString(mes) {
     return "12 - Dezembro";
 }
 
-function salvarConteudo(mes, inicio, fim, qtd, observacoes, conteudo, tecnicas, recursos) {
-    if (qtd < 1) return; // valor inválido, não faz o fetch
+async function carregarDias() {
+    let href = '' + location;
+    href = href.replace(/(\d+).*/, "$1/conteudo");
 
-    contador++;
-    fetch(url + "salvar_form_proposta_trabalho", {
+    let response = await fetch(href);
+    let html = await response.text();
+    let dias = [];
+    for (const match of html.matchAll(/<td>\d\d\/\d\d\/\d\d\d\d<\/td>/g)) {
+        dias.push(match[0].substring(indexOfFirstDigit(match[0]), indexOfLastDigit(match[0]) + 1)); // faz o trim de qualquer coisa que nao seja número
+    }
+    return dias;
+}
+
+function getWeek(date) {
+    var onejan = new Date(date.getFullYear(), 0, 1);
+    var millisecsInDay = 86400000;
+    return Math.ceil((((date - onejan) / millisecsInDay) + onejan.getDay() + 1) / 7);
+}
+
+function makeeditable(table) {
+    table.addEventListener('keydown', (e) => {
+        var code = e.which || e.keyCode;
+        if (code == '38' && window.getSelection().anchorOffset == 0 && e.target.parentElement.previousElementSibling) { // Up
+            e.target.parentElement.previousElementSibling.cells[e.target.cellIndex].focus()
+        }
+        else if (code == '40' && window.getSelection().anchorOffset == window.getSelection().anchorNode.textContent.length && e.target.parentElement.nextElementSibling) { // Down
+            e.target.parentElement.nextElementSibling.cells[e.target.cellIndex].focus()
+
+        }
+        else if (code == '37' && window.getSelection().anchorOffset == 0 && e.target.previousElementSibling) { // Left
+            e.target.previousElementSibling.focus()
+        }
+        else if (code == '39' && window.getSelection().anchorOffset == window.getSelection().anchorNode.textContent.length && e.target.nextElementSibling) { // Right
+            e.target.nextElementSibling.focus()
+        }
+    });
+    for (let i = 0; i < table.rows.length; i++) {
+        for (let j = 0; j < table.rows[i].cells.length; j++) {
+            // with contenteditable in each cell, it is possible to navigate through them with tab key
+            table.rows[i].cells[j].setAttribute("contenteditable", "true");
+        }
+    }
+}
+
+function addpastelistener(table) {
+    table.addEventListener('paste', (event) => {
+        event.preventDefault();
+        let paste = (event.clipboardData || window.clipboardData).getData('text');
+        let col = event.target;
+        while (col && col.tagName != 'TD') col = col.parentElement;
+        let row = col;
+        while (row && row.tagName != 'TR') row = row.parentElement;
+        let tab = row;
+        while (tab && tab.tagName != 'TABLE') tab = tab.parentElement;
+        let rows = paste.replace(/(\r\n)|\r|\n/g, '\n').split("\n");
+        for (let i = 0, r = row.rowIndex; i < rows.length && r < tab.rows.length; i++) {
+            let cells = rows[i].split("\t");
+            for (let j = 0, c = col.cellIndex; j < cells.length && c < tab.rows[r].cells.length; j++) {
+                tab.rows[r].cells[c].innerHTML = cells[j].trim();
+                c++;
+            }
+            r++;
+        }
+    });
+}
+
+function customFetch(url, data) {
+    contador++
+    fetch(url, data).then(() => {
+        document.getElementById("modalAlert").innerHTML = "Aguarde... " + contador;
+        if (--contador <= 0) window.location.reload(false);
+    })
+}
+
+function salvarConteudo(mes, inicio, fim, qtd, observacoes, conteudo, tecnicas, recursos) {
+    if (qtd < 1) return; // valor inválido
+
+    customFetch(url + "salvar_form_proposta_trabalho", {
         "headers": {
-            "accept": "*/*",
-            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,es;q=0.7,pt;q=0.6",
             "content-type": "application/x-www-form-urlencoded",
-            "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"98\", \"Google Chrome\";v=\"98\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "\"Linux\"",
-            "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-origin",
             "x-requested-with": "XMLHttpRequest"
@@ -228,12 +134,148 @@ function salvarConteudo(mes, inicio, fim, qtd, observacoes, conteudo, tecnicas, 
         "method": "POST",
         "mode": "cors",
         "credentials": "include"
-    }).then(() => { if (--contador <= 0) window.location.reload(false); });
+    });
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.func) {
-        this[request.func](request.dados);
+function salvarProposta(proposta, dias) {
+    document.getElementById('modalAlert').style.display = 'block';
+
+    url = '' + location;
+    planoId = url.match(/\d+/g)[1];
+    url = url.replace(/plano_ensino.*/, "plano_ensino/");
+    contador = 0;
+
+    proposta = Array.prototype.map.call(proposta.rows, (el) => {
+        let dataIni = el.cells[0].innerHTML.replaceAll(/\s/g, '').split('-');
+        let dataFim = stringParaDate(dataIni.length > 1 ? dataIni[1] : dataIni[0]);
+        dataIni = stringParaDate(dataIni[0]);
+        if (dataIni > dataFim) { let tmp = dataIni; dataIni = dataFim; dataFim = tmp; }
+        return { dataIni: dataIni, dataFim: dataFim, conteudo: el.cells[1].innerHTML.trim(), tecnicas: el.cells[2].innerHTML.trim(), recursos: el.cells[3].innerHTML.trim(), observacoes: el.cells[4].innerHTML.trim() };
+    }).filter(el => !isNaN(el.dataIni) && el.conteudo).sort((a, b) => a.dataIni - b.dataIni);
+
+    for (let i = 0; i < proposta.length; i++) {
+        // como o plano de ensino só aceita períodos no mesmo mes, se forem meses diferentes, precisamos criar dois períodos, um para cada mês. se for um período maior q 2 meses já não funciona.
+        if (proposta[i].dataIni.getMonth() < proposta[i].dataFim.getMonth() - 1) {
+            continue;
+        }
+        else if (proposta[i].dataIni.getMonth() == proposta[i].dataFim.getMonth() - 1) {
+            let dataIni2 = new Date(proposta[i].dataFim.getFullYear(), proposta[i].dataFim.getMonth(), 1); // primeiro dia do mes
+            let dataFim2 = proposta[i].dataFim;
+            proposta[i].dataFim = new Date(proposta[i].dataIni.getFullYear(), proposta[i].dataIni.getMonth() + 1, 0); // ultimo dia do mes
+
+            let numAulas2 = 0;
+            for (let dia of dias) if (stringParaDate(dia) >= dataIni2 && stringParaDate(dia) <= dataFim2) numAulas2++;
+
+            salvarConteudo(mesParaString(dataIni2.getMonth()), dataIni2.getDate(), dataFim2.getDate(), numAulas2, proposta[i].observacoes, proposta[i].conteudo, proposta[i].tecnicas, proposta[i].recursos);
+        }
+
+        let numAulas = 0;
+        if (i + 1 < proposta.length && +proposta[i].dataIni == +proposta[i + 1].dataIni ||
+            i - 1 >= 0 && +proposta[i].dataIni == +proposta[i - 1].dataIni) { // se houver dois conteúdos com a mesma data, então cada conteúdo é uma aula
+            // o '+' na frente da data é para converter a data para milissegundos e comparar datas https://stackoverflow.com/a/16713809/4072641
+            numAulas = 1;
+        } else { // se um conteúdo estiver em apenas uma data, então todas as aulas daquela data é daquele conteúdo
+            for (let dia of dias) if (stringParaDate(dia) >= proposta[i].dataIni && stringParaDate(dia) <= proposta[i].dataFim) numAulas++;
+        }
+        salvarConteudo(mesParaString(proposta[i].dataIni.getMonth()), proposta[i].dataIni.getDate(), proposta[i].dataFim.getDate(), numAulas, proposta[i].observacoes, proposta[i].conteudo, proposta[i].tecnicas, proposta[i].recursos);
     }
-    sendResponse({ url: window.location.href });
-});
+}
+
+function apagarProposta() {
+    let apagar = confirm("Tem certeza que deseja apagar toda a proposta?");
+    if (!apagar) return;
+
+    document.getElementById('modalAlert').style.display = 'block';
+
+    url = '' + location;
+    planoId = url.match(/\d+/g)[1];
+    url = url.replace(/editar.*/, "excluir_proposta_trabalho/");
+    contador = 0;
+
+    Array.from(document.getElementsByClassName('excluir_proposta')).forEach(e => {
+        customFetch(url + e.getAttribute('proposta-id'), {
+            "headers": {
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+                "x-requested-with": "XMLHttpRequest"
+            },
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        });
+    });
+}
+
+async function carregarPlanoEnsino() {
+    let dias = await carregarDias();
+
+    sendMessage("fetchHTML", { html: "modal_alert" }, html => {
+        let modalAlert = htmlToElement(html)
+        document.getElementsByClassName("meio")[0].appendChild(modalAlert);
+    })
+
+    sendMessage("fetchHTML", { html: "academico/propostaplano" }, html => {
+        let modal = htmlToElement(html);
+        document.getElementsByClassName("meio")[0].appendChild(modal);
+
+        let btnGerar = htmlToElement('<a id="modalPropostaBtn" class="btn btn-mini btn-success no-print" title="Gera proposta a partir do calendário" style="margin-left: 10px" href="#modalProposta" role="button"  data-toggle="modal"><i class="icon-list icon-white"></i> Gerar proposta completa</a>');
+        let btnApagar = htmlToElement('<a id="apagar_proposta" class="btn btn-mini btn-danger no-print" title="Apaga toda a proposta de trabalho" style="margin-left: 10px"><i class="icon-remove icon-white"></i> Apagar proposta</a>');
+        document.getElementsByClassName("adicionar_proposta")[0].appendChild(btnGerar);
+        document.getElementsByClassName("adicionar_proposta")[0].appendChild(btnApagar);
+        document.getElementById("apagar_proposta").onclick = (e) => apagarProposta();
+        let tab = document.getElementById("proposta");
+        for (let i = 0; i < dias.length; i++) {
+            let tr = htmlToElement('<tr> <td></td> <td></td> <td></td> <td></td> <td></td> </tr>');
+            tab.appendChild(tr);
+        }
+        makeeditable(tab);
+        addpastelistener(tab);
+
+        document.getElementById("salvar_proposta").onclick = (e) => salvarProposta(tab, dias);
+        document.getElementById("tipoProposta").onchange = (e) => {
+            for (let i = 0; i < dias.length; i++) {
+                tab.rows[i].cells[0].innerHTML = "";
+            }
+            if (e.target.value == "Por aula") {
+                for (let i = 0; i < dias.length; i++) {
+                    tab.rows[i].cells[0].innerHTML = dias[i];
+                }
+            } else if (e.target.value == "Por dia") {
+                tab.rows[0].cells[0].innerHTML = dias[0];
+                for (let i = 1, j = 1; i < dias.length; i++) {
+                    if (dias[i] != dias[i - 1])
+                        tab.rows[j++].cells[0].innerHTML = dias[i];
+                }
+            } else if (e.target.value == "Por semana") {
+                let semana = getWeek(stringParaDate(dias[0]));
+                let ini = dias[0];
+                let j = 0;
+                for (let i = 0; i < dias.length; i++) {
+                    let tmp = getWeek(stringParaDate(dias[i]))
+                    if (tmp != semana) {
+                        tab.rows[j++].cells[0].innerHTML = ini + "-" + dias[i - 1];
+                        semana = tmp;
+                        ini = dias[i];
+                    }
+                }
+            }
+        }
+    });
+}
+
+function sendMessage(funcao, dados, callback) {
+    chrome.runtime.sendMessage({ funcao: funcao, dados: dados }, callback);
+}
+
+function init() {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.funcao) this[request.funcao](request.dados);
+        // sendResponse({ url: window.location.href });
+    });
+
+    if (window.location.href.includes("plano_ensino/editar")) carregarPlanoEnsino();
+
+}
+
+window.addEventListener('load', (event) => { init(); });
