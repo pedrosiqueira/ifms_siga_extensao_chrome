@@ -26,16 +26,8 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.funcao) this[request.funcao](sendResponse, request.dados);
-    return true;
+    return true; // to call sendResponse asynchronously
 });
-
-function fetchHTML(sendResponse, dados) {
-    fetch(chrome.runtime.getURL("html/" + dados.html + ".html"))
-        .then(response => response.text())
-        .then(data => {
-            sendResponse(data);
-        });
-}
 
 // function getCurrentTabId(sendResponse) {
 //     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
