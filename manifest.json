@@ -14,21 +14,40 @@
          "matches": [
             "https://academico.ifms.edu.br/*"
          ]
+      },
+      {
+         "resources": [
+            "html/suap/frequencias.html"
+         ],
+         "matches": [
+            "https://suap.ifms.edu.br/*"
+         ]
       }
    ],
    "content_scripts": [
       {
          "js": [
-            "js/suapScript.js"
+            "js/commons.js",
+            "js/suapFrequencia.js"
          ],
          "matches": [
-            "https://suap.ifms.edu.br/*"
+            "https://suap.ifms.edu.br/ponto/frequencia_funcionario/*faixa_0*"
          ]
       },
       {
          "js": [
-            "js/academicoPlanoEnsino.js",
-            "js/academico.js"
+            "js/commons.js",
+            "js/suap.js"
+         ],
+         "matches": [
+            "https://suap.ifms.edu.br/"
+         ]
+      },
+      {
+         "js": [
+            "js/commons.js",
+            "js/academico.js",
+            "js/academicoPlanoEnsino.js"
          ],
          "matches": [
             "https://academico.ifms.edu.br/administrativo/professores/diario/*/plano_ensino/editar/*"
@@ -36,15 +55,16 @@
       },
       {
          "js": [
-            "js/academicoConteudo.js",
-            "js/academico.js"
+            "js/commons.js",
+            "js/academico.js",
+            "js/academicoConteudo.js"
          ],
          "matches": [
             "https://academico.ifms.edu.br/administrativo/professores/diario/*/conteudo"
          ]
       }
    ],
-   "description": "Assistente para preencher diários no acadêmico e imprimir folhas-ponto no suap.",
+   "description": "Assistente para preencher diários no acadêmico e gerenciar folhas-ponto no suap.",
    "icons": {
       "128": "img/favicon.png"
    },
@@ -54,5 +74,5 @@
       "declarativeContent",
       "storage"
    ],
-   "version": "0.4.1"
+   "version": "0.4.2"
 }
