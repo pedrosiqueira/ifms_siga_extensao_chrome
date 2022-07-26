@@ -16,37 +16,6 @@ async function addPresenca() {
     window.location.reload(false);
 }
 
-function getAllIds() {
-    let $tds = $("td[id^=conteudo_");
-    let $ids = [];
-    $tds.each(function () {//varios links sao os mesmos, entao eu tiro os repetidos
-        $ids.push($(this).attr("id").substring(9));
-    });
-    return $ids;
-}
-
-function preencherConteudo(linhas) {
-    $ids = getAllIds();
-
-    contador = 0;
-
-    createModalEspera("Aguarde o preenchimento dos conteúdos");
-
-    for (let i = 0; i < $ids.length; i++) {
-        preencherAula($ids[i], linhas[i]);
-    }
-
-}
-
-function preencherAula(id, conteudo) {
-    var href = "/administrativo/professores/salvarConteudo/" + id;
-    var td = $("td#conteudo_" + id);
-
-    contador++;
-    $.post(href, { conteudo: conteudo }
-    ).done(function () { if (--contador <= 0) window.location.reload(false); });
-}
-
 function preencherReposicao(reposicoes) {
     contador = 0;
 
