@@ -1,5 +1,3 @@
-let contador; // variável que conta quantas requisições ajax foram feitas
-
 function sendMessage(funcao, dados, callback) {
     chrome.runtime.sendMessage({ funcao: funcao, dados: dados }, callback);
 }
@@ -35,23 +33,6 @@ async function carregarDias() {
         dias.push(match[0].substring(indexOfFirstDigit(match[0]), indexOfLastDigit(match[0]) + 1)); // faz o trim de qualquer coisa que nao seja número
     }
     return dias;
-}
-
-function openModalAlert() {
-    contador = 0;
-    document.getElementById('modalAlert').style.display = 'block';
-    setTimeout(() => { // se depois de 1 segundo, o contador permanecer no zero, então pode desativar o modal
-        if (contador == 0)
-            document.getElementById('modalAlert').style.display = 'none';
-    }, "1000");
-}
-
-function customFetch(url, data) {
-    contador++
-    fetch(url, data).then(() => {
-        document.getElementById("modalAlert").innerHTML = "Aguarde... " + contador;
-        if (--contador <= 0) window.location.reload(false);
-    })
 }
 
 function navigateCell(e) {
