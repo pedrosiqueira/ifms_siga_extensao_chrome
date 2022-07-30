@@ -1,4 +1,4 @@
-let notSaved = "alert-warning"
+let notSaved = "backgroundcoloryellow"
 
 function alterarBackground(e) {
     if (e.target.nodeName == "#text")
@@ -18,13 +18,22 @@ function salvarAlteracao(e) {
             "headers": { "Content-Type": "application/x-www-form-urlencoded" },
             "body": `${body}=${encodeURIComponent(el.innerHTML)}`,
             "method": "POST",
-        }).then((response) => el.classList.remove(notSaved));
+        }).then((response) => {
+            el.classList.remove(notSaved)
+            el.classList.toggle('backgroundcolorgreen')
+        });
     }
 }
 
 function salvarAlteracoes() {
-    Array.from(document.querySelectorAll("td[id^=conteudo_].alert-warning, td[id^=obs_].alert-warning")).forEach(e => {
+    Array.from(document.querySelectorAll("td[id^=conteudo_].backgroundcoloryellow, td[id^=obs_].backgroundcoloryellow")).forEach(e => {
         salvarAlteracao(e)
+    })
+}
+
+function limparConteudoObservacoes() {
+    Array.from(document.querySelectorAll("td[id^=conteudo_], td[id^=obs_]")).forEach(e => {
+        e.innerHTML = ""
     })
 }
 
@@ -32,6 +41,13 @@ async function init() {
     let btnSalvarAlteracoes = htmlToElement('<a id="salvarAlteracoes" class="btn btn-small btn-primary no-print" title="Salvar alterações pendentes (em amarelo)" style="margin-left: 10px"><i class="icon-upload icon-white"></i> Salvar alterações</a>');
     querySelectorIncludesText("a", "Adicionar Aula").insertAdjacentElement("afterend", btnSalvarAlteracoes);
     btnSalvarAlteracoes.onclick = salvarAlteracoes;
+
+    let btnLimpar = htmlToElement('<a id="limparConteudoObservacoes" class="btn btn-small btn-danger no-print" title="Limpar todos os conteúdos e observações" style="margin-left: 10px"><i class="icon-upload icon-white"></i> Limpar conteúdos e observações</a>');
+    document.getElementById("salvarAlteracoes").insertAdjacentElement("afterend", btnLimpar);
+    btnLimpar.onclick = limparConteudoObservacoes;
+
+    let info = htmlToElement('<div> <br>Informações: <ul> <li>Você pode colar dados de um editor de planilhas.</li> <li>Para salvar, basta trocar de célula ou apertar o botão "salvar alterações".</li> <li>Para trocar de célula, tecle [tab] ou as setas direcionais.</li> </ul> </div>')
+    document.getElementById("limparConteudoObservacoes").insertAdjacentElement("afterend", info);
 
     Array.from(document.querySelectorAll("td[id^=conteudo_], td[id^=obs_]")).forEach(e => {
         e.innerHTML = e.innerHTML.substring(0, e.innerHTML.indexOf("<a href=")).trim()
