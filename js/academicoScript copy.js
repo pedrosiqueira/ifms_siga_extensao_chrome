@@ -1,23 +1,5 @@
-
-async function addPresenca() {
-    $as = $('a[href*="presencaTodos"]');
-    $as.removeAttr("onclick");
-    let myMap = new Map();
-    $as.each(function (i, e) {//varios links sao os mesmos, entao eu tiro os repetidos
-        myMap.set($(this).attr("href"), $(this).attr("href"));
-    });
-
-    createModalEspera("Aguarde a colocação das aulas");
-
-    for (var value of myMap.values()) {
-        await fetch(value);
-    }
-
-    window.location.reload(false);
-}
-
 function preencherReposicao(reposicoes) {
-    contador = 0;
+    contadorModalAlert = 0;
 
     createModalEspera("Aguarde o preenchimento das reposições");
 
@@ -33,7 +15,7 @@ function preencherReposicao(reposicoes) {
 }
 
 function preencherReposicao2(id, fields) {
-    contador++;
+    contadorModalAlert++;
     $.post(window.location.href,
         {
             'data[antecipacao_reposicao][aula_id]': id,
@@ -44,5 +26,5 @@ function preencherReposicao2(id, fields) {
             'data[antecipacao_reposicao][observacao]': fields[3],
             'data[antecipacao_reposicao][justificativa]': fields[7]
         }
-    ).done(function () { if (--contador <= 0) window.location.reload(false); });
+    ).done(function () { if (--contadorModalAlert <= 0) window.location.reload(false); });
 }
