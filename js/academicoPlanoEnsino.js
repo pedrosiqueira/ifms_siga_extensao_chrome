@@ -31,13 +31,13 @@ function salvarConteudo(mes, inicio, fim, qtd, observacoes, conteudo, tecnicas, 
     });
 }
 
-function salvarProposta(proposta, dias) {
+async function salvarProposta(proposta, dias) {
 
     let url = '' + location;
     let planoId = url.match(/\d+/g)[1];
     url = url.replace(/plano_ensino.*/, "plano_ensino/");
 
-    openModalAlert();
+    await openModalAlert();
 
     proposta = Array.prototype.map.call(proposta.rows, (el) => {
         let dataIni = el.cells[0].innerHTML.replaceAll(/\s/g, '').split('-');
@@ -75,11 +75,11 @@ function salvarProposta(proposta, dias) {
     }
 }
 
-function apagarProposta() {
+async function apagarProposta() {
     let apagar = confirm("Tem certeza que deseja apagar toda a proposta?");
     if (!apagar) return;
 
-    openModalAlert();
+    await openModalAlert();
 
     let url = '' + location;
     url = url.replace(/editar.*/, "excluir_proposta_trabalho/");
@@ -148,8 +148,6 @@ async function carregarPlanoEnsino() {
 }
 
 async function init() {
-    fetchHTML("modal_alert");
-
     carregarPlanoEnsino();
 }
 
