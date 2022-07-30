@@ -42,7 +42,7 @@ async function init() {
     querySelectorIncludesText("a", "Adicionar Aula").insertAdjacentElement("afterend", btnSalvarAlteracoes);
     btnSalvarAlteracoes.onclick = salvarAlteracoes;
 
-    let btnLimpar = htmlToElement('<a id="limparConteudoObservacoes" class="btn btn-small btn-danger no-print" title="Limpar todos os conteúdos e observações" style="margin-left: 10px"><i class="icon-upload icon-white"></i> Limpar conteúdos e observações</a>');
+    let btnLimpar = htmlToElement('<a id="limparConteudoObservacoes" class="btn btn-small btn-danger no-print" title="Limpar todos os conteúdos e observações" style="margin-left: 10px"><i class="icon-trash icon-white"></i> Limpar conteúdos e observações</a>');
     document.getElementById("salvarAlteracoes").insertAdjacentElement("afterend", btnLimpar);
     btnLimpar.onclick = limparConteudoObservacoes;
 
