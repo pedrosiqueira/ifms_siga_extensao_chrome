@@ -54,6 +54,9 @@
          ]
       },
       {
+         "css": [
+            "html/animations.css"
+         ],
          "js": [
             "js/commons.js",
             "js/academico.js",
