@@ -1,0 +1,22 @@
+.backgroundcolorgreen {
+    animation-name: backgroundcolorgreen;
+    animation-duration: 1s;
+}
+
+.backgroundcoloryellow {
+    animation-name: backgroundcoloryellow;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes backgroundcolorgreen {
+    100% {
+        background-color: green;
+    }
+}
+
+@keyframes backgroundcoloryellow {
+    100% {
+        background-color: yellow;
+    }
+}
