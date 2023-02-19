@@ -28,6 +28,24 @@
       {
          "js": [
             "js/commons.js",
+            "js/academicoPlanosEnsinoProfessor.js"
+         ],
+         "matches": [
+            "https://academico.ifms.edu.br/administrativo/docentes/ficha/*/plano_ensino"
+         ]
+      },
+      {
+         "js": [
+            "js/commons.js",
+            "js/academicoPlanosEnsinoProfessores.js"
+         ],
+         "matches": [
+            "https://academico.ifms.edu.br/administrativo/docentes/lista_plano_ensino"
+         ]
+      },
+      {
+         "js": [
+            "js/commons.js",
             "js/suapFrequencia.js"
          ],
          "matches": [
@@ -87,5 +105,5 @@
       "declarativeContent",
       "storage"
    ],
-   "version": "0.5.0"
+   "version": "0.6.0"
 }
