@@ -55,6 +55,7 @@ async function init() {
         e.addEventListener('paste', pasteCell);
         e.addEventListener('keydown', navigateCell);
         e.addEventListener('input', alterarBackground);
+        e.addEventListener('paste', alterarBackground);
         e.addEventListener("focusout", salvarAlteracao)
     })
 }
