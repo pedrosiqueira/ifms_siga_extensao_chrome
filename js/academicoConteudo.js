@@ -54,7 +54,7 @@ async function init() {
         e.setAttribute("contenteditable", "true")
         e.addEventListener('paste', pasteCell);
         e.addEventListener('keydown', navigateCell);
-        e.addEventListener('DOMSubtreeModified', alterarBackground); // evento 'change' nao captura quando innerHTML é alterado
+        e.addEventListener('input', alterarBackground);
         e.addEventListener("focusout", salvarAlteracao)
     })
 }
