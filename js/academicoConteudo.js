@@ -49,14 +49,26 @@ async function init() {
     let info = htmlToElement('<div> <br>Informações: <ul> <li>Você pode colar dados de um editor de planilhas.</li> <li>Para salvar, basta trocar de célula ou apertar o botão "salvar alterações".</li> <li>Para trocar de célula, tecle [tab] ou as setas direcionais.</li> </ul> </div>')
     document.getElementById("limparConteudoObservacoes").insertAdjacentElement("afterend", info);
 
+    // create a new instance of 'MutationObserver' named 'observer', 
+    // passing it a callback function
+    // https://stackoverflow.com/a/61866345/4072641
+    observer = new MutationObserver(function (mutationsList, observer) {
+        for (mutation of mutationsList) {
+            alterarBackground(mutation)
+        }
+    });
+
     Array.from(document.querySelectorAll("td[id^=conteudo_], td[id^=obs_]")).forEach(e => {
         e.innerHTML = e.innerHTML.substring(0, e.innerHTML.indexOf("<a href=")).trim()
         e.setAttribute("contenteditable", "true")
         e.addEventListener('paste', pasteCell);
         e.addEventListener('keydown', navigateCell);
         e.addEventListener('input', alterarBackground);
-        e.addEventListener('paste', alterarBackground);
         e.addEventListener("focusout", salvarAlteracao)
+
+        // call 'observe' on that MutationObserver instance, 
+        // passing it the element to observe, and the options object
+        observer.observe(e, { characterData: false, childList: true, attributes: false });
     })
 }
 
